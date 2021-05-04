@@ -26,3 +26,70 @@ input[type=text] {
     border: 0;
     overflow: hidden;
 }
+
+textarea {
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+
+				width: 100%;
+			}
+
+			#signin {
+				position: absolute;
+				right: 16px;
+				/* margin-top: 16px; */
+				background-color: rgb(66, 245, 155);
+				border: 0px solid black;
+			}
+
+			#signin:focused {
+				background-color: rgb(86, 245, 155);
+				border: 0px solid black;
+			}
+
+			#signin:hover {
+				background-color: rgb(46, 225, 135);
+				border: 0px solid black;
+			}
+
+button {
+	/* height: 45px;
+	width: 75px; */
+	border: 0px solid black;
+	color: black;
+	background-color: rgb(66, 245, 155);
+	border-radius: 5px;
+	font-weight: 600;
+	padding: 10px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+#importWordsLink {
+	border: 0px solid black;
+	display: inline-block;
+	color: black;
+	background-color: rgb(66, 245, 155);
+	border-radius: 5px;
+	font-weight: 600;
+	padding: 10px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	text-decoration: none;
+	box-sizing: border-box;
+}
+.pickPicBtn {
+	margin-bottom: 0px;
+}
+
+.wb-import {
+				margin-left: 16px;
+				margin-top: 8px;
+			}
+			.wb-import input[type=text] {
+				width: 6rem;
+				height: 1rem;
+				outline: none;
+				border: 2px solid #1b4d18;
+			}

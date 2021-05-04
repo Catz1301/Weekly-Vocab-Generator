@@ -1,221 +1,34 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Weekly Vocab Generator</title>
+		<meta name="google-site-verification" content="eQFot4LVMhCdQpGdlBE3uuyq444ivqbwfJsg-Kstwpk" />
+		<link href="style.css" rel="stylesheet" type="text/css" />
+		<link href="modern.min.css" rel="stylesheet"/>
+		<!-- Load the Google API Loader script. -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.0/p5.min.js"></script>
+		<script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad">
+		</script>
+		<script defer async src="winbox.bundle.js"></script>
+		<script type="text/javascript" src="loader.js"></script>
+	</head>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Weekly Vocab Generator</title>
-	<meta name="google-site-verification" content="eQFot4LVMhCdQpGdlBE3uuyq444ivqbwfJsg-Kstwpk" />
-	<link href="style.css" rel="stylesheet" type="text/css" />
+<body onload="(async () => await checkImport())()">
+	<!-- <a href="dialog.html">dialog.html</a> -->
+	<div id="wb-main" style="display: none">
+		<div id="content">
+			<textarea id="importArea" cols="64" rows="4"></textarea>
+			<button onclick="let words = this.previousElementSibling.value.split('\n'); extractWords(words)">Import</button>
+		</div>
+	</div>
 
-	<!-- Load the Google API Loader script. -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.0/p5.min.js"></script>
-<script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad">
-
-	</script>
-	<script type="text/javascript">
-		// The Browser API key obtained from the Google API Console.
-    // Replace with your own Browser API key, or your own key.
-    var developerKey = 'AIzaSyDumkc5N8MbINDPdNvNmBQygRkPP4XBme0';
-
-    // The Client ID obtained from the Google API Console. Replace with your own Client ID.
-    var clientId = "62124354117-qecrl0icoca3h3u656lu053apq4s8j7f.apps.googleusercontent.com"
-
-    // Replace with your own project number from console.developers.google.com.
-    // See "Project number" under "IAM & Admin" > "Settings"
-    var appId = "62124354117";
-
-    // Scope to use to access user's Drive items.
-    var scope = ['https://www.googleapis.com/auth/drive.file'];
-
-    var pickerApiLoaded = false;
-    var oauthToken;
-
-    // Use the Google API Loader script to load the google.picker script.
-    async function loadPicker() {
-			console.log(window.location.host + "== replit.com: " + (window.location.host == "replit.com"));
-			if (window.location.host != "replit.com") {
-	      gapi.load('auth', {'callback': onAuthApiLoad});
-  	    gapi.load('picker', {'callback': onPickerApiLoad});
-			}
-    }
-
-    async function onAuthApiLoad() {
-			if (window.location.host !== "replit.com") {
-				window.gapi.auth.authorize(
-						{
-							'client_id': clientId,
-							'scope': scope,
-							'immediate': false
-						},
-						handleAuthResult);
-			}
-    }
-
-    async function onPickerApiLoad() {
-      pickerApiLoaded = true;
-      //createPicker();
-    }
-
-    async function handleAuthResult(authResult) {
-      if (authResult && !authResult.error) {
-        oauthToken = authResult.access_token;
-        //createPicker();
-				loggedIn = true;
-      }
-    }
-
-    // Create and render a Picker object for searching images.
-    function createPicker(obj) {
-      if (pickerApiLoaded && oauthToken) {
-        let photoUploadView = new google.picker.View(google.picker.ViewId.PHOTO_UPLOAD);
-				let imageSearchView = new google.picker.ImageSearchView();
-				let photosView = new google.picker.PhotosView();
-				imageSearchView.setQuery(obj.query);
-        photoUploadView.setMimeTypes("image/png,image/jpeg,image/jpg");
-        var picker = new google.picker.PickerBuilder()
-            .setAppId(appId)
-            .setOAuthToken(oauthToken)
-            .addView(imageSearchView)
-            .addView(photosView)
-						.addView(photoUploadView)
-						.setOrigin(window.location.protocol + '//' + window.location.host)
-						//.setRelayUrl(relayURL)
-            .setDeveloperKey(developerKey)
-            .setCallback(pickerCallback)
-            .build();
-         picker.setVisible(true);
-      }
-    }
-
-    // A simple callback implementation.
-    function pickerCallback(data) {
-      if (data.action == google.picker.Action.PICKED) {
-				console.dir(data);
-        var fileId = data.docs[0].id;
-				let fullSizePicURL = data.docs[0].thumbnails[1].url;
-				let fullSizePicHeight = data.docs[0].thumbnails[1].height;
-				let fullSizePicWidth = data.docs[0].thumbnails[1].width;
-				let alternatePicURL = data.docs[0].thumbnails[0].url;
-				let alternatePicHeight = data.docs[0].thumbnails[0].height;
-				let alternatePicWidth = data.docs[0].thumbnails[0].width;
-
-				addPicture("picture" + currentPicture + "Result", data);
-				// fullSize picture properties;
-				pictures[currentPicture-1].pictureURL = fullSizePicURL;
-				pictures[currentPicture-1].pictureDim.width = fullSizePicWidth;
-				pictures[currentPicture-1].pictureDim.height = fullSizePicHeight;
-
-				// alternate picture properties;
-				pictures[currentPicture-1].alternativePicture.pictureURL = alternatePicURL;
-				pictures[currentPicture-1].alternativePicture.pictureDim.width = alternatePicWidth;
-				pictures[currentPicture-1].alternativePicture.pictureDim.height = alternatePicHeight;
-
-        // if (currentPicture == 1) {
-				// 	addPicture("picture1Result", data);
-				// 	pictureURLS[0] = fullSizePicURL;
-				// 	picture1Dim.width = fullSizePicWidth;
-				// 	picture1Dim.height = fullSizePicHeight;
-					
-				// } else if (currentPicture == 2) {
-				// 	addPicture("picture2Result", data);
-				// 	pictureURLS[1] = fullSizePicURL;
-				// 	picture2Dim.width = fullSizePicWidth;
-				// 	picture2Dim.height = fullSizePicHeight;
-				// } else if (currentPicture == 3) {
-				// 	addPicture("picture3Result", data);
-				// 	pictureURLS[2] = fullSizePicURL;
-				// 	picture3Dim.width = fullSizePicWidth;
-				// 	picture3Dim.height = fullSizePicHeight;
-				// } else if (currentPicture == 4) {
-				// 	addPicture("picture4Result", data);
-				// 	pictureURLS[3] = fullSizePicURL;
-				// 	picture4Dim.width = fullSizePicWidth;
-				// 	picture4Dim.height = fullSizePicHeight;
-				// }
-      }
-    }
-
-		function addPicture(section, data) {
-			let img = document.createElement("img");
-			img.src = data.docs[0].thumbnails[1].url;
-			//img; //.crossOrigin = "Anonymous";
-			img.width = data.docs[0].thumbnails[0].width;
-			img.height= data.docs[0].thumbnails[0].height;
-			let pictureResult = document.getElementById(section);
-			if (pictureResult) {
-				pictureResult.style.display = "block";
-				pictureResult.append(img);
-				var doc = data[google.picker.Response.DOCUMENTS][0];
-				let url = doc[google.picker.Document.URL];
-			} else {
-				alert("Picture section does not exist! Contact the developer.");
-			}
-			var message = 'You picked: ' + data.docs[0].url;
-			document.getElementById('result').innerHTML = message;
-		}
-	</script>
-	<style>
-		#signin {}
-
-		textarea {
-			-webkit-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			box-sizing: border-box;
-
-			width: 100%;
-		}
-
-		#signin {
-			position: absolute;
-			right: 16px;
-			/* margin-top: 16px; */
-			background-color: rgb(66, 245, 155);
-			border: 0px solid black;
-		}
-
-		#signin:focused {
-			background-color: rgb(86, 245, 155);
-			border: 0px solid black;
-		}
-
-		#signin:hover {
-			background-color: rgb(46, 225, 135);
-			border: 0px solid black;
-		}
-
-		button {
-			/* height: 45px;
-			width: 75px; */
-			border: 0px solid black;
-			color: black;
-			background-color: rgb(66, 245, 155);
-			border-radius: 5px;
-			font-weight: 600;
-			padding: 10px;
-			margin-top: 8px;
-			margin-bottom: 8px;
-		}
-
-		.pickPicBtn {
-			margin-bottom: 0px;
-		}
-
-		.pictureResult {
-			/* padding: 16px;
-			background-color: rgb(250, 250, 250);
-			display: none; */
-		}
-
-		#generateVocab {
-			/* margin-top: 16px; */
-		}
-	</style>
-</head>
-
-<body>
 	<button onclick="(async () => await loadPicker())()" id="signin">Sign In</button>
-	<div id="result"></div>
+	<!-- <div id="result"></div> -->
+	<!-- <div id="importWords"> -->
+		<button id="importWordsLink" onclick="openImportWindow()">Import Words</button>
+	<!-- </div> -->
 	<div id="wordInputSect">
 		<div id="word1Section" class="wordSection">
 			<input id="word1" class="wordInput" name="Word1" placeholder="Word 1" />
@@ -244,13 +57,50 @@
 		<button id="generateVocab" onclick="(async () => await main())()">Generate</button>
 	</div>
 	<div id="vocabOutput">
+		<output id="statusText" ></output>
 		<textarea id="vocabOutputBox" cols="100" rows="10" readonly></textarea>
 		<br />
 	</div>
 	<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+	<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.mjs"
+></script>
 	<script src="DateUtils.js"></script>
 	<script src="vars.js"></script>
-  <script src="script.js"></script>
-	<script src="Debug.js"></script>
+  <script type="module" src="index.js"></script>
+	<script type="module" src="Debug.js"></script>
+	<script>
+		function checkImport() {
+			console.log("HERE IN body onload.")
+			WordImport.checkImport();
+		}
+
+		function extractWords(words) {
+			console.log(words);
+			word1.value = words[0].split('-')[0].trim();
+			word2.value = words[1].split('-')[0].trim();
+			word3.value = words[2].split('-')[0].trim();
+			word4.value = words[3].split('-')[0].trim();
+			importWinBox.close();
+			window.importWinBox = null;
+		}
+		
+		function openImportWindow() {
+			let node = document.getElementById('content');
+			let winboxArgs = {
+				title: 'Import Words',
+				class: 'modern',
+				x: 'center',
+				y: 'center'
+			}
+			window.importWinBox = new WinBox(winboxArgs);
+			// importWinBox.addClass("modern");
+			//node.style.display = "initial";
+			importWinBox.mount(node.cloneNode(true));
+			
+			// importWinBox.move('center', 'center');
+		}
+	</script>
   </body>
 </html>

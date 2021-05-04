@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>Import words</title>
+		<link href="style.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<textarea id="importArea" cols="64" rows="4"></textarea>
+		<button onclick="extractWords()">Import</button>
+		<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.mjs"
+></script>
+		<script type="module" src="index.js"></script>
+		<script defer>
+			var words;
+			var importedWords;
+			var importTextBox = document.getElementById("importArea");
+			function extractWords() {
+				globalThis.imported = true;
+				
+				importedWords = importTextBox.value.split('\n');
+				console.log(importedWords);
+				Cookies.set('imported', 'true');
+				words = ['', '', '', ''];
+				for (let i = 0; i < words.length; i++) {
+					words[i] = importedWords[i].split('-')[0].trim();
+				}
+				Cookies.set('importedWords', words);
+				location.href = "/index.html";
+			}
+		</script>
+	</body>
+</html>

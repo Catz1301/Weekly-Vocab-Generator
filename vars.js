@@ -6,18 +6,39 @@ var word2 = document.getElementById("word2");
 var word3 = document.getElementById("word3");
 var word4 = document.getElementById("word4");
 
-var sentence1= document.getElementById("word1Sentence");
-var sentence2= document.getElementById("word2Sentence");
-var sentence3= document.getElementById("word3Sentence");
-var sentence4= document.getElementById("word4Sentence");
+var sentence1 = document.getElementById("word1Sentence");
+var sentence2 = document.getElementById("word2Sentence");
+var sentence3 = document.getElementById("word3Sentence");
+var sentence4 = document.getElementById("word4Sentence");
 var sentences = [null, null, null, null];
 var googleSentences = [null, null, null, null];
 var GOOGLE_API_TOKEN = "AIzaSyDumkc5N8MbINDPdNvNmBQygRkPP4XBme0";
 
 var MERRIAMWEBSTER_API_TOKEN = "de9da84b-64a8-440f-8e1f-e31a23a68dbd";
 
+console.log(document.getElementById('statusText'));
+var statusText = document.getElementById('statusText');
+console.log("statusText element is: ", statusText);
 var outputBox = document.getElementById("vocabOutputBox");
-//var relayURL = 'https://docs.google.com';
+console.log("outputBox element is: ", outputBox);
+
+var picturesArrElTemplate = {
+	pictureURL: null,
+	pictureData: null,
+	pictureObj: null,
+	pictureDim: {
+		width: null,
+		height: null
+	},
+	pictureBlob: null,
+	alternativePicture: {
+		pictureURL: null,
+		pictureDim: {
+			width: null,
+			height: null
+		}
+	}
+};
 
 var pictures = [
 	{
@@ -89,6 +110,10 @@ var pictures = [
 		}
 	}
 ];
+
+var updateStatus = function(newStatus) {
+	statusText.value = newStatus;
+}
 
 // var pictureURLS = [null, null, null, null];
 // var pictureData = [null, null, null, null];
